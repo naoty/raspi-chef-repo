@@ -1,0 +1,4 @@
+.rspec
+.bundle/
+cookbooks/
+vendor/
