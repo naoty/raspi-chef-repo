@@ -1,0 +1,10 @@
+{
+    "user": {
+        "name": "pi",
+        "group": "pi",
+        "home": "/home/pi"
+    },
+    "run_list": [
+        "pi"
+    ]
+}
