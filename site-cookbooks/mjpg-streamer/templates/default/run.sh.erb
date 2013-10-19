@@ -1,0 +1,6 @@
+FRAMERATE=10
+WIDTH=640
+HEIGHT=480
+
+export LD_LIBRARY_PATH=.
+./mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so -fps $FRAMERATE -x $WIDTH -y $HEIGHT"
