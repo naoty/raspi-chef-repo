@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: pi
+# Cookbook Name:: ruby
 # Recipe:: default
 #
 # Copyright 2013, Naoto Kaneko
@@ -24,14 +24,43 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-user node["user"]["name"] do
-  home node["user"]["home"]
-  password node["user"]["password"]
-  shell "/bin/bash"
-  supports manage_home: true
+RBENV_ROOT = "#{node["user"]["home"]}/.rbenv"
+
+git RBENV_ROOT do
+  repository "https://github.com/sstephenson/rbenv.git"
+  reference "master"
+  action :checkout
+  user node["user"]["name"]
+  group node["user"]["group"]
 end
 
-group node["user"]["group"] do
-  members [node["user"]["name"]]
-  append true
+bash "setup rbenv" do
+  user node["user"]["name"]
+  group node["user"]["group"]
+  environment "HOME" => node["user"]["home"]
+  code <<-EOC
+    mkdir #{RBENV_ROOT}/plugins
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+    echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+    source ~/.bash_profile
+  EOC
 end
+
+git "#{RBENV_ROOT}/plugins/ruby-build" do
+  repository "https://github.com/sstephenson/ruby-build.git"
+  reference "master"
+  action :checkout
+  user node["user"]["name"]
+  group node["user"]["group"]
+end
+
+bash "install ruby" do
+  user node["user"]["name"]
+  group node["user"]["group"]
+  environment "HOME" => node["user"]["home"]
+  code <<-EOC
+    #{RBENV_ROOT}/bin/rbenv install #{node["version"]["ruby"]}
+    #{RBENV_ROOT}/bin/rbenv global #{node["version"]["ruby"]}
+  EOC
+end
+

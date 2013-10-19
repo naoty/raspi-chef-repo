@@ -2,11 +2,16 @@
     "user": {
         "name": "pi",
         "group": "pi",
-        "home": "/home/pi"
+        "home": "/home/pi",
+        "password": "pi"
+    },
+    "version": {
+        "ruby": "2.0.0-p247"
     },
     "run_list": [
         "pi",
         "apt-get",
-        "git"
+        "git",
+        "ruby"
     ]
 }
