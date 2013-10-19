@@ -12,6 +12,7 @@
         "pi",
         "apt-get",
         "git",
-        "ruby"
+        "ruby",
+        "node.js"
     ]
 }

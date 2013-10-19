@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: ruby
+# Cookbook Name:: node.js
 # Recipe:: default
 #
 # Copyright 2013, Naoto Kaneko
@@ -24,44 +24,37 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-RBENV_ROOT = "#{node["user"]["home"]}/.rbenv"
+NODEBREW = "#{node["user"]["home"]}/.nodebrew/current/bin/nodebrew"
 
-git RBENV_ROOT do
-  repository "https://github.com/sstephenson/rbenv.git"
-  reference "master"
-  action :checkout
-  user node["user"]["name"]
-  group node["user"]["group"]
-end
-
-bash "setup rbenv" do
+bash "install nodebrew" do
   user node["user"]["name"]
   group node["user"]["group"]
   environment "HOME" => node["user"]["home"]
   code <<-EOC
-    mkdir #{RBENV_ROOT}/plugins
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
-    echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+    curl -L git.io/nodebrew | perl - setup
+  EOC
+  creates NODEBREW
+end
+
+bash "setup nodebrew" do
+  user node["user"]["name"]
+  group node["user"]["group"]
+  environment "HOME" => node["user"]["home"]
+  code <<-EOC
+    echo 'export PATH=$HOME/.nodebrew/current/bin:$PATH' >> ~/.bash_profile
     source ~/.bash_profile
   EOC
-  not_if { File.read("#{node["user"]["home"]}/.bash_profile").include?("rbenv") }
+  not_if { File.read("#{node["user"]["home"]}/.bash_profile").include?("nodebrew") }
 end
 
-git "#{RBENV_ROOT}/plugins/ruby-build" do
-  repository "https://github.com/sstephenson/ruby-build.git"
-  reference "master"
-  action :checkout
-  user node["user"]["name"]
-  group node["user"]["group"]
-end
-
-bash "install ruby" do
+bash "install node.js" do
   user node["user"]["name"]
   group node["user"]["group"]
   environment "HOME" => node["user"]["home"]
   code <<-EOC
-    #{RBENV_ROOT}/bin/rbenv install #{node["version"]["ruby"]}
-    #{RBENV_ROOT}/bin/rbenv global #{node["version"]["ruby"]}
+    #{NODEBREW} install stable
+    #{NODEBREW} use stable
   EOC
+  creates "#{node["user"]["home"]}/.nodebrew/current/bin/nodebrew"
 end
 
