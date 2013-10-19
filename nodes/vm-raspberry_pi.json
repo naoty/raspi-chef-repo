@@ -5,6 +5,8 @@
         "home": "/home/pi"
     },
     "run_list": [
-        "pi"
+        "pi",
+        "apt-get",
+        "git"
     ]
 }
