@@ -34,6 +34,12 @@ git RBENV_ROOT do
   group node["user"]["group"]
 end
 
+file "#{node["user"]["home"]}/.bash_profile" do
+  owner node["user"]["name"]
+  group node["user"]["group"]
+  action :create_if_missing
+end
+
 bash "setup rbenv" do
   user node["user"]["name"]
   group node["user"]["group"]
@@ -63,5 +69,7 @@ bash "install ruby" do
     #{RBENV_ROOT}/bin/rbenv install #{node["version"]["ruby"]}
     #{RBENV_ROOT}/bin/rbenv global #{node["version"]["ruby"]}
   EOC
+  creates "#{RBENV_ROOT}/version"
+  timeout 6 * 60 * 60
 end
 

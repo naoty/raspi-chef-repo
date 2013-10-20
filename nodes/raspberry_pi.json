@@ -1,0 +1,19 @@
+{
+    "user": {
+        "name": "pi",
+        "group": "pi",
+        "home": "/home/pi",
+        "password": "pi"
+    },
+    "version": {
+        "ruby": "2.0.0-p247"
+    },
+    "run_list": [
+        "apt-get",
+        "git",
+        "ruby",
+        "node.js",
+        "wiringpi",
+        "mjpg-streamer"
+    ]
+}

@@ -36,6 +36,12 @@ bash "install nodebrew" do
   creates NODEBREW
 end
 
+file "#{node["user"]["home"]}/.bash_profile" do
+  owner node["user"]["name"]
+  group node["user"]["group"]
+  action :create_if_missing
+end
+
 bash "setup nodebrew" do
   user node["user"]["name"]
   group node["user"]["group"]
@@ -56,5 +62,6 @@ bash "install node.js" do
     #{NODEBREW} use stable
   EOC
   creates "#{node["user"]["home"]}/.nodebrew/current/bin/nodebrew"
+  timeout 6 * 60 * 60
 end
 
