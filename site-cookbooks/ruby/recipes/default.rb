@@ -61,6 +61,12 @@ git "#{RBENV_ROOT}/plugins/ruby-build" do
   group node["user"]["group"]
 end
 
+%w(build-essential libreadline-dev libssl-dev).each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
 bash "install ruby" do
   user node["user"]["name"]
   group node["user"]["group"]
